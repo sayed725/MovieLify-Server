@@ -52,6 +52,28 @@ async function run() {
         res.send(result)
     })
 
+    app.put('/movie/:id', async(req,res)=>{
+        const id = req.params.id
+        const filter = { _id: new ObjectId(id)}
+        const options = { upsert: true };
+        const updatedMovie = req.body;
+        const movie = {
+            $set: {
+                poster: updatedMovie.poster,
+                title: updatedMovie.title,
+                genre: updatedMovie.genre,
+                duration: updatedMovie.duration,
+                year: updatedMovie.year,
+                rating: updatedMovie.rating,
+                summary: updatedMovie.summary,
+                name: updatedMovie.name,
+                email: updatedMovie.email
+            }
+        }
+        const result = await movieCollection.updateOne(filter, movie, options)
+        res.send(result)
+    })
+
 
 
 
