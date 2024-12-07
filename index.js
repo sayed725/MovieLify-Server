@@ -30,6 +30,7 @@ async function run() {
     await client.connect();
 
     const movieCollection = client.db('movieDB').collection('movie')
+    const favoriteCollection = client.db('movieDB').collection('favorite')
 
     app.post('/movie', async(req, res)=>{
         const newMovie = req.body
@@ -39,7 +40,7 @@ async function run() {
     })
 
 
-    app.get('/movie', async(req, res)=>{
+    app.get('/sortedmovie', async(req, res)=>{
         const cursor = movieCollection.find().sort({ rating: -1 }).limit(6)
         const result = await cursor.toArray();
         res.send(result)
@@ -51,6 +52,13 @@ async function run() {
         const result = await movieCollection.findOne(query)
         res.send(result)
     })
+
+    app.get('/movie',async(req, res)=>{
+        const cursor = movieCollection.find();
+        const result = await cursor.toArray();
+        res.send(result)
+    })
+
 
     app.put('/movie/:id', async(req,res)=>{
         const id = req.params.id
@@ -80,6 +88,24 @@ async function run() {
         const result = await movieCollection.deleteOne(query)
         res.send(result)
     })
+
+    // favorite sec 
+    
+    app.post('/favoritelist', async(req, res)=>{
+        const favorite = req.body
+        console.log(favorite)
+        const result = await favoriteCollection.insertOne(favorite)
+        res.send(result)
+    })
+
+    app.get('/favoritelist', async(req, res)=>{
+        const cursor = favoriteCollection.find();
+        const result = await cursor.toArray();
+        res.send(result)
+
+    })
+
+
 
 
 
