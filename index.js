@@ -54,7 +54,14 @@ async function run() {
     })
 
     app.get('/movie',async(req, res)=>{
-        const cursor = movieCollection.find();
+        const { searchParams }= req.query
+        let option = {}
+
+        if(searchParams){
+            option = { title: { $regex: searchParams, $options: "i"} }
+        }
+
+        const cursor = movieCollection.find(option);
         const result = await cursor.toArray();
         res.send(result)
     })
@@ -98,8 +105,13 @@ async function run() {
         res.send(result)
     })
 
-    app.get('/favoritelist', async(req, res)=>{
-        const cursor = favoriteCollection.find();
+
+    app.get('/favorite', async(req,res)=>{
+        const { email } = req.query
+
+        let option = {userEmail:{$regex:email, $options:"i"}} 
+       
+        const cursor = favoriteCollection.find(option)
         const result = await cursor.toArray();
         res.send(result)
 
